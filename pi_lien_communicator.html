@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>miiSpine — PI Lien Communicator</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --border: #2a3441;
+    --accent: #2ea043;
+    --accent-soft: rgba(46,160,67,0.1);
+    --accent-border: rgba(46,160,67,0.3);
+    --amber: #d29922;
+    --amber-soft: rgba(210,153,34,0.1);
+    --red: #f85149;
+    --red-soft: rgba(248,81,73,0.1);
+    --blue: #388bfd;
+    --blue-soft: rgba(56,139,253,0.1);
+    --text: #e6edf3;
+    --text-soft: #8b949e;
+    --text-muted: #484f58;
+    --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 32px 20px;
+  }
+
+  .app {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    animation: fadeDown 0.5s ease both;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-logo {
+    width: 38px;
+    height: 38px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .brand-text {
+    font-family: 'Instrument Serif', serif;
+    font-size: 20px;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .brand-text span { color: var(--accent); }
+
+  .header-badge {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-border);
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  /* LAYOUT */
+  .layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  /* PANELS */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .panel-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+  }
+
+  .panel-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+  }
+
+  .panel-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-soft);
+  }
+
+  .panel-body { padding: 20px; }
+
+  /* FORM ELEMENTS */
+  .field {
+    margin-bottom: 16px;
+  }
+
+  .field:last-child { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    margin-bottom: 6px;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238b949e' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* COMMUNICATION TYPE SELECTOR */
+  .comm-types {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .comm-type {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .comm-type:hover { border-color: var(--accent); }
+
+  .comm-type.active {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .comm-type .ct-icon { font-size: 18px; margin-bottom: 4px; }
+
+  .comm-type .ct-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-soft);
+    letter-spacing: 0.3px;
+  }
+
+  .comm-type.active .ct-label { color: var(--accent); }
+
+  /* TONE SELECTOR */
+  .tones {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tone-btn {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-soft);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.3px;
+  }
+
+  .tone-btn:hover { border-color: var(--text-soft); color: var(--text); }
+  .tone-btn.active-firm { border-color: var(--red); color: var(--red); background: var(--red-soft); }
+  .tone-btn.active-professional { border-color: var(--blue); color: var(--blue); background: var(--blue-soft); }
+  .tone-btn.active-collaborative { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .tone-btn.active-urgent { border-color: var(--amber); color: var(--amber); background: var(--amber-soft); }
+
+  /* GENERATE BUTTON */
+  .generate-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    letter-spacing: 0.3px;
+    margin-top: 20px;
+  }
+
+  .generate-btn:hover { background: #3fb950; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(46,160,67,0.3); }
+  .generate-btn:active { transform: translateY(0); }
+  .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+
+  .generate-btn.loading .spinner { display: block; }
+  .generate-btn.loading .btn-text { display: none; }
+
+  /* OUTPUT PANEL */
+  .output-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    animation: fadeUp 0.5s ease 0.1s both;
+    position: sticky;
+    top: 20px;
+  }
+
+  .output-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface2);
+  }
+
+  .output-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .output-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .action-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-soft);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    letter-spacing: 0.3px;
+  }
+
+  .action-btn:hover { border-color: var(--text-soft); color: var(--text); }
+
+  .action-btn.copied {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  /* OUTPUT CONTENT */
+  .output-body { padding: 24px; }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--text-muted);
+  }
+
+  .empty-icon { font-size: 40px; margin-bottom: 16px; opacity: 0.4; }
+
+  .empty-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 18px;
+    color: var(--text-soft);
+    margin-bottom: 8px;
+  }
+
+  .empty-desc { font-size: 13px; line-height: 1.6; max-width: 280px; }
+
+  /* GENERATED LETTER */
+  .letter-output {
+    display: none;
+  }
+
+  .letter-output.visible { display: block; }
+
+  .letter-meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .meta-tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 10px;
+    letter-spacing: 0.3px;
+  }
+
+  .letter-content {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text);
+    white-space: pre-wrap;
+    font-family: 'DM Sans', sans-serif;
+    min-height: 200px;
+  }
+
+  .letter-content.streaming::after {
+    content: '▊';
+    animation: blink 0.7s infinite;
+    color: var(--accent);
+  }
+
+  /* HISTORY */
+  .history-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .history-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .history-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .history-item:hover { border-color: var(--accent); background: var(--accent-soft); }
+
+  .history-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .history-info { flex: 1; min-width: 0; }
+
+  .history-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .history-type {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 1px;
+  }
+
+  .history-time {
+    font-size: 10px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 16px 0;
+  }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 720px) {
+    .layout { grid-template-columns: 1fr; }
+    .output-panel { position: static; }
+    .comm-types { grid-template-columns: repeat(4, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="brand">
+      <div class="brand-logo">⚕</div>
+      <span class="brand-text">mii<span>Spine</span> · PI Lien Communicator</span>
+    </div>
+    <div class="header-badge">AI Powered</div>
+  </div>
+
+  <div class="layout">
+
+    <!-- INPUT PANEL -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-icon" style="background:rgba(56,139,253,0.1)">📋</div>
+        <span class="panel-title">Case Details</span>
+      </div>
+      <div class="panel-body">
+
+        <div class="field-row">
+          <div class="field">
+            <label>Patient Name</label>
+            <input type="text" id="patientName" placeholder="John Smith" />
+          </div>
+          <div class="field">
+            <label>DOI</label>
+            <input type="date" id="doi" />
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Attorney Name</label>
+            <input type="text" id="attorneyName" placeholder="Jane Doe, Esq." />
+          </div>
+          <div class="field">
+            <label>Law Firm</label>
+            <input type="text" id="lawFirm" placeholder="Doe & Associates" />
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Total Lien ($)</label>
+            <input type="number" id="lienAmount" placeholder="12,500" />
+          </div>
+          <div class="field">
+            <label>Days Outstanding</label>
+            <input type="number" id="daysOut" placeholder="90" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Settlement Status</label>
+          <select id="settlementStatus">
+            <option value="">Select status...</option>
+            <option value="pre_settlement">Pre-Settlement — Case Open</option>
+            <option value="negotiating">Actively Negotiating</option>
+            <option value="settlement_reached">Settlement Reached — Awaiting Disbursement</option>
+            <option value="unresponsive">Attorney Unresponsive</option>
+            <option value="disputing">Attorney Disputing Lien Amount</option>
+            <option value="bulk_offer">Bulk Settlement Offer Pending</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Procedures / Services Rendered</label>
+          <textarea id="procedures" placeholder="e.g. L4-L5 TLIF 01/15/2026, 6 office visits, MRI review, ESI x2..."></textarea>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-label">Communication Type</div>
+        <div class="comm-types">
+          <div class="comm-type active" data-type="initial_notice" onclick="selectType(this)">
+            <div class="ct-icon">📬</div>
+            <div class="ct-label">Initial Notice</div>
+          </div>
+          <div class="comm-type" data-type="follow_up" onclick="selectType(this)">
+            <div class="ct-icon">🔄</div>
+            <div class="ct-label">Follow-Up</div>
+          </div>
+          <div class="comm-type" data-type="settlement_demand" onclick="selectType(this)">
+            <div class="ct-icon">⚖️</div>
+            <div class="ct-label">Settlement Demand</div>
+          </div>
+          <div class="comm-type" data-type="final_notice" onclick="selectType(this)">
+            <div class="ct-icon">🚨</div>
+            <div class="ct-label">Final Notice</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-label">Negotiation Tone</div>
+        <div class="tones">
+          <button class="tone-btn active-professional" data-tone="professional" onclick="selectTone(this)">Professional</button>
+          <button class="tone-btn" data-tone="firm" onclick="selectTone(this)">Firm</button>
+          <button class="tone-btn" data-tone="collaborative" onclick="selectTone(this)">Collaborative</button>
+          <button class="tone-btn" data-tone="urgent" onclick="selectTone(this)">Urgent</button>
+        </div>
+
+        <div class="field" style="margin-top:16px; margin-bottom:0">
+          <label>Additional Context (optional)</label>
+          <textarea id="context" placeholder="e.g. Prior offer of $8,000 was rejected. Attorney mentioned case may settle in 30 days. Patient had prior back injury..." style="min-height:60px"></textarea>
+        </div>
+
+        <button class="generate-btn" id="generateBtn" onclick="generateLetter()">
+          <div class="spinner"></div>
+          <span class="btn-text">✦ Generate Communication</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- OUTPUT PANEL -->
+    <div class="output-panel">
+      <div class="output-header">
+        <div class="output-header-left">
+          <div class="panel-icon" style="background:var(--accent-soft)">✉️</div>
+          <span class="panel-title">Generated Communication</span>
+        </div>
+        <div class="output-actions">
+          <button class="action-btn" id="copyBtn" onclick="copyLetter()" style="display:none">
+            📋 Copy
+          </button>
+          <button class="action-btn" id="clearBtn" onclick="clearOutput()" style="display:none">
+            ✕ Clear
+          </button>
+        </div>
+      </div>
+
+      <div class="output-body">
+
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">⚖️</div>
+          <div class="empty-title">Ready to generate</div>
+          <div class="empty-desc">Fill in the case details and select your communication type and tone to generate a professional PI lien letter.</div>
+        </div>
+
+        <div class="letter-output" id="letterOutput">
+          <div class="letter-meta" id="letterMeta"></div>
+          <div class="letter-content" id="letterContent"></div>
+        </div>
+
+        <div class="history-section" id="historySection" style="display:none">
+          <div class="history-title">Recent Communications</div>
+          <div id="historyList"></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let selectedType = 'initial_notice';
+let selectedTone = 'professional';
+let history = [];
+
+function selectType(el) {
+  document.querySelectorAll('.comm-type').forEach(e => e.classList.remove('active'));
+  el.classList.add('active');
+  selectedType = el.dataset.type;
+}
+
+function selectTone(el) {
+  document.querySelectorAll('.tone-btn').forEach(e => {
+    e.className = 'tone-btn';
+  });
+  el.classList.add('active-' + el.dataset.tone);
+  selectedTone = el.dataset.tone;
+}
+
+function getMetaTags() {
+  const typeLabels = {
+    initial_notice: { label: 'Initial Notice', color: 'var(--blue)', bg: 'var(--blue-soft)' },
+    follow_up: { label: 'Follow-Up', color: 'var(--amber)', bg: 'var(--amber-soft)' },
+    settlement_demand: { label: 'Settlement Demand', color: 'var(--accent)', bg: 'var(--accent-soft)' },
+    final_notice: { label: 'Final Notice', color: 'var(--red)', bg: 'var(--red-soft)' }
+  };
+  const toneLabels = {
+    professional: { color: 'var(--blue)', bg: 'var(--blue-soft)' },
+    firm: { color: 'var(--red)', bg: 'var(--red-soft)' },
+    collaborative: { color: 'var(--accent)', bg: 'var(--accent-soft)' },
+    urgent: { color: 'var(--amber)', bg: 'var(--amber-soft)' }
+  };
+  const t = typeLabels[selectedType];
+  const tone = toneLabels[selectedTone];
+  return `
+    <span class="meta-tag" style="color:${t.color}; background:${t.bg}; border:1px solid ${t.color}40">${t.label}</span>
+    <span class="meta-tag" style="color:${tone.color}; background:${tone.bg}; border:1px solid ${tone.color}40">${selectedTone.charAt(0).toUpperCase() + selectedTone.slice(1)} Tone</span>
+    <span class="meta-tag" style="color:var(--text-soft); background:var(--surface2); border:1px solid var(--border)">${new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}</span>
+  `;
+}
+
+async function generateLetter() {
+  const patientName = document.getElementById('patientName').value || 'Patient';
+  const attorneyName = document.getElementById('attorneyName').value || 'Attorney';
+  const lawFirm = document.getElementById('lawFirm').value || 'Law Firm';
+  const lienAmount = document.getElementById('lienAmount').value;
+  const daysOut = document.getElementById('daysOut').value;
+  const settlementStatus = document.getElementById('settlementStatus').value;
+  const procedures = document.getElementById('procedures').value;
+  const context = document.getElementById('context').value;
+  const doi = document.getElementById('doi').value;
+
+  const typeLabels = {
+    initial_notice: 'Initial Lien Notice',
+    follow_up: 'Follow-Up on Outstanding Lien',
+    settlement_demand: 'Settlement Demand / Negotiation',
+    final_notice: 'Final Notice Before Legal Action'
+  };
+
+  const toneInstructions = {
+    professional: 'Write in a professional, courteous but firm tone. Use precise legal and medical billing language. Be respectful but clear about expectations.',
+    firm: 'Write with firm, assertive language. Be direct about the outstanding obligation. Reference legal rights under medical lien statutes. Less pleasantries, more directness.',
+    collaborative: 'Write in a collaborative, solution-oriented tone. Acknowledge the attorney\'s position, express willingness to work toward resolution, suggest compromise pathways. Maintain the relationship.',
+    urgent: 'Write with urgency and time-sensitive language. Use clear deadlines. Communicate consequences of non-response. Create appropriate pressure without being threatening.'
+  };
+
+  const settlementLabels = {
+    pre_settlement: 'Case is currently pre-settlement and still open.',
+    negotiating: 'Settlement negotiations are actively underway.',
+    settlement_reached: 'Settlement has been reached and we are awaiting disbursement.',
+    unresponsive: 'Attorney has been unresponsive to prior communications.',
+    disputing: 'Attorney is currently disputing the lien amount.',
+    bulk_offer: 'There is a pending bulk settlement offer under consideration.'
+  };
+
+  const prompt = `You are an expert medical billing specialist and negotiator for miiSpine, an independent spine surgery practice. You are writing a ${typeLabels[selectedType]} letter to a personal injury attorney regarding a medical lien.
+
+CASE DETAILS:
+- Patient: ${patientName}
+- Date of Injury: ${doi || 'Not specified'}
+- Attorney: ${attorneyName}, ${lawFirm}
+- Total Lien Amount: ${lienAmount ? '$' + Number(lienAmount).toLocaleString() : 'Not specified'}
+- Days Outstanding: ${daysOut || 'Not specified'} days
+- Settlement Status: ${settlementLabels[settlementStatus] || 'Not specified'}
+- Procedures/Services: ${procedures || 'Spine surgery and related services'}
+- Additional Context: ${context || 'None'}
+
+TONE INSTRUCTIONS: ${toneInstructions[selectedTone]}
+
+Write a professional letter that:
+1. Has a proper header (Date, To/From, Re: line)
+2. References specific case details naturally
+3. Clearly states the lien amount and what it covers
+4. ${selectedType === 'settlement_demand' ? 'Includes a specific settlement offer or negotiation position' : 'States clear expectations and next steps'}
+5. ${selectedType === 'final_notice' ? 'References legal remedies available if not resolved' : 'Maintains the professional relationship'}
+6. Ends with a specific call to action and contact information placeholder
+7. Uses appropriate medical-legal language for lien letters
+8. Is concise — no more than 3-4 paragraphs
+
+Sign the letter from: "Billing & Collections Department, miiSpine"
+
+Write ONLY the letter text, no explanations or meta-commentary. Start directly with the date line.`;
+
+  const btn = document.getElementById('generateBtn');
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('letterOutput').classList.add('visible');
+  document.getElementById('letterMeta').innerHTML = getMetaTags();
+  const contentEl = document.getElementById('letterContent');
+  contentEl.textContent = '';
+  contentEl.classList.add('streaming');
+
+  document.getElementById('copyBtn').style.display = 'none';
+  document.getElementById('clearBtn').style.display = 'none';
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        stream: true,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value);
+      const lines = chunk.split('\n');
+
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6);
+          if (data === '[DONE]') continue;
+          try {
+            const parsed = JSON.parse(data);
+            if (parsed.type === 'content_block_delta' && parsed.delta?.text) {
+              fullText += parsed.delta.text;
+              contentEl.textContent = fullText;
+            }
+          } catch(e) {}
+        }
+      }
+    }
+
+    contentEl.classList.remove('streaming');
+
+    // Add to history
+    const historyItem = {
+      patient: patientName,
+      type: typeLabels[selectedType],
+      tone: selectedTone,
+      time: new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'}),
+      content: fullText,
+      dotColor: selectedType === 'final_notice' ? 'var(--red)' :
+                selectedType === 'settlement_demand' ? 'var(--accent)' :
+                selectedType === 'follow_up' ? 'var(--amber)' : 'var(--blue)'
+    };
+    history.unshift(historyItem);
+    if (history.length > 5) history.pop();
+    renderHistory();
+
+    document.getElementById('copyBtn').style.display = 'flex';
+    document.getElementById('clearBtn').style.display = 'flex';
+
+  } catch(err) {
+    contentEl.classList.remove('streaming');
+    contentEl.textContent = 'Error generating letter. Please check your connection and try again.\n\nError: ' + err.message;
+  }
+
+  btn.classList.remove('loading');
+  btn.disabled = false;
+}
+
+function renderHistory() {
+  if (history.length === 0) return;
+  document.getElementById('historySection').style.display = 'block';
+  const list = document.getElementById('historyList');
+  list.innerHTML = history.map((item, i) => `
+    <div class="history-item" onclick="restoreHistory(${i})">
+      <div class="history-dot" style="background:${item.dotColor}"></div>
+      <div class="history-info">
+        <div class="history-name">${item.patient}</div>
+        <div class="history-type">${item.type} · ${item.tone}</div>
+      </div>
+      <div class="history-time">${item.time}</div>
+    </div>
+  `).join('');
+}
+
+function restoreHistory(index) {
+  const item = history[index];
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('letterOutput').classList.add('visible');
+  document.getElementById('letterContent').textContent = item.content;
+  document.getElementById('copyBtn').style.display = 'flex';
+  document.getElementById('clearBtn').style.display = 'flex';
+}
+
+function copyLetter() {
+  const content = document.getElementById('letterContent').textContent;
+  navigator.clipboard.writeText(content);
+  const btn = document.getElementById('copyBtn');
+  btn.classList.add('copied');
+  btn.textContent = '✓ Copied';
+  setTimeout(() => {
+    btn.classList.remove('copied');
+    btn.innerHTML = '📋 Copy';
+  }, 2000);
+}
+
+function clearOutput() {
+  document.getElementById('letterOutput').classList.remove('visible');
+  document.getElementById('letterContent').textContent = '';
+  document.getElementById('emptyState').style.display = 'flex';
+  document.getElementById('copyBtn').style.display = 'none';
+  document.getElementById('clearBtn').style.display = 'none';
+}
+</script>
+</body>
+</html>
