@@ -486,6 +486,28 @@
     margin-bottom: 10px;
   }
 
+  .proc-chip {
+    padding: 6px 12px;
+    border-radius: 16px;
+    border: 1.5px solid var(--border);
+    background: var(--surface2);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-soft);
+    cursor: pointer;
+    transition: all 0.18s;
+    user-select: none;
+  }
+
+  .proc-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+  .proc-chip.selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
   /* ANIMATIONS */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(16px); }
@@ -633,7 +655,25 @@
 
         <div class="field">
           <label>Procedures / Services Rendered</label>
-          <textarea id="procedures" placeholder="e.g. L4-L5 TLIF 01/15/2026, 6 office visits, MRI review, ESI x2..."></textarea>
+          <div id="procedureChips" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px">
+            <div class="proc-chip" onclick="toggleProc(this)" data-val="MRI">MRI</div>
+            <div class="proc-chip" onclick="toggleProc(this)" data-val="X-Rays">X-Rays</div>
+            <div class="proc-chip" onclick="toggleProc(this)" data-val="Office Visit / Consultation">Office Visit / Consultation</div>
+            <div class="proc-chip" onclick="toggleProc(this)" data-val="Epidural Steroid Injection">Epidural Steroid Injection</div>
+            <div class="proc-chip" onclick="toggleProc(this)" data-val="Facet Injection / MBB">Facet Injection / MBB</div>
+            <div class="proc-chip" onclick="toggleProc(this)" data-val="Radiofrequency Ablation">Radiofrequency Ablation</div>
+            <div class="proc-chip" onclick="toggleProc(this)" data-val="Spinal Cord Stimulator">Spinal Cord Stimulator</div>
+            <div class="proc-chip" onclick="toggleProc(this)" data-val="UBE Endoscopic Decompression">UBE Endoscopic Decompression</div>
+            <div class="proc-chip" onclick="toggleProc(this)" data-val="Lumbar Fusion (TLIF/PLIF/ALIF)">Lumbar Fusion (TLIF/PLIF/ALIF)</div>
+            <div class="proc-chip" onclick="toggleProc(this)" data-val="Cervical Fusion (ACDF)">Cervical Fusion (ACDF)</div>
+            <div class="proc-chip" onclick="toggleProc(this)" data-val="Lumbar Discectomy / Microdiscectomy">Lumbar Discectomy / Microdiscectomy</div>
+            <div class="proc-chip" onclick="toggleProc(this)" data-val="Cervical Disc Replacement">Cervical Disc Replacement</div>
+            <div class="proc-chip" onclick="toggleProc(this)" data-val="Spinal Decompression / Laminectomy">Spinal Decompression / Laminectomy</div>
+            <div class="proc-chip" onclick="toggleProc(this)" data-val="Kyphoplasty / Vertebroplasty">Kyphoplasty / Vertebroplasty</div>
+            <div class="proc-chip" onclick="toggleProc(this)" data-val="PRP / Orthobiologics">PRP / Orthobiologics</div>
+            <div class="proc-chip" onclick="toggleProc(this)" data-val="Physical Therapy">Physical Therapy</div>
+          </div>
+          <input type="text" id="proceduresOther" placeholder="Other / additional details (e.g. MRI review, x2 injections, dates...)" style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; font-family:'DM Sans',sans-serif; font-size:13px; color:var(--text); outline:none; width:100%; margin-top:4px;" />
         </div>
 
         <div class="divider"></div>
@@ -763,6 +803,18 @@ function getMetaTags() {
   `;
 }
 
+function toggleProc(el) {
+  el.classList.toggle('selected');
+}
+
+function getSelectedProcedures() {
+  const chips = [...document.querySelectorAll('.proc-chip.selected')].map(c => c.dataset.val);
+  const other = document.getElementById('proceduresOther').value;
+  const all = [...chips];
+  if (other) all.push(other);
+  return all.length > 0 ? all.join(', ') : 'Spine surgery and related services';
+}
+
 async function generateLetter() {
   const patientName = document.getElementById('patientName').value || 'Patient';
   const attorneyName = document.getElementById('attorneyName').value || 'Attorney';
@@ -770,7 +822,7 @@ async function generateLetter() {
   const lienAmount = document.getElementById('lienAmount').value;
   const daysOut = document.getElementById('daysOut').value;
   const settlementStatus = document.getElementById('settlementStatus').value;
-  const procedures = document.getElementById('procedures').value;
+  const procedures = getSelectedProcedures();
   const context = document.getElementById('context').value;
   const doi = document.getElementById('doi').value;
 
