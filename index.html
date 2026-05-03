@@ -522,7 +522,57 @@
       <div class="brand-logo">⚕</div>
       <span class="brand-text">mii<span>Spine</span> · PI Lien Communicator</span>
     </div>
-    <div class="header-badge">AI Powered</div>
+    <div style="display:flex; gap:10px; align-items:center">
+      <button onclick="toggleSettings()" id="settingsBtn" style="padding:8px 16px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600; color:var(--text-soft); cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:6px;">⚙️ Practice Settings</button>
+      <div class="header-badge">AI Powered</div>
+    </div>
+  </div>
+
+  <!-- SETTINGS PANEL -->
+  <div id="settingsPanel" style="display:none; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:24px; margin-bottom:24px; animation:fadeUp 0.3s ease both">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; padding-bottom:14px; border-bottom:1px solid var(--border)">
+      <div style="font-size:14px; font-weight:700; color:var(--text)">⚙️ Practice Settings — Saved to this browser</div>
+      <button onclick="saveSettings()" style="padding:8px 20px; border-radius:8px; border:none; background:var(--accent); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:700; color:white; cursor:pointer;">Save Settings</button>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px">
+      <div style="display:flex; flex-direction:column; gap:5px">
+        <label style="font-size:10px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-muted)">Practice Name</label>
+        <input id="set_practice" type="text" placeholder="miiSpine" style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text); outline:none;" />
+      </div>
+      <div style="display:flex; flex-direction:column; gap:5px">
+        <label style="font-size:10px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-muted)">Physician Name & Credentials</label>
+        <input id="set_physician" type="text" placeholder="Venu Vemuri, DO" style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text); outline:none;" />
+      </div>
+      <div style="display:flex; flex-direction:column; gap:5px">
+        <label style="font-size:10px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-muted)">Billing Contact Name</label>
+        <input id="set_billing_name" type="text" placeholder="Nadja / Billing Department" style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text); outline:none;" />
+      </div>
+      <div style="display:flex; flex-direction:column; gap:5px">
+        <label style="font-size:10px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-muted)">Billing Email</label>
+        <input id="set_email" type="email" placeholder="practice@miispine.com" style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text); outline:none;" />
+      </div>
+      <div style="display:flex; flex-direction:column; gap:5px">
+        <label style="font-size:10px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-muted)">Phone Number</label>
+        <input id="set_phone" type="text" placeholder="(502) 242-6370" style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text); outline:none;" />
+      </div>
+      <div style="display:flex; flex-direction:column; gap:5px">
+        <label style="font-size:10px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-muted)">Fax Number</label>
+        <input id="set_fax" type="text" placeholder="(502) 242-XXXX" style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text); outline:none;" />
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:14px">
+      <label style="font-size:10px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-muted)">Mailing Address</label>
+      <input id="set_address" type="text" placeholder="6420 Dutchmans Pkwy, Suite 160, Louisville, KY 40205" style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text); outline:none; width:100%;" />
+    </div>
+    <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:14px">
+      <label style="font-size:10px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-muted)">Tagline / Practice Description (used in letter signature)</label>
+      <input id="set_tagline" type="text" placeholder="Independent Spine Surgery · Louisville, Kentucky" style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text); outline:none; width:100%;" />
+    </div>
+    <div style="display:flex; flex-direction:column; gap:5px">
+      <label style="font-size:10px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:var(--text-muted)">NPI Number (optional)</label>
+      <input id="set_npi" type="text" placeholder="1234567890" style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text); outline:none; width:200px;" />
+    </div>
+    <div id="settingsSaved" style="display:none; margin-top:12px; font-size:12px; color:var(--accent); font-weight:600">✓ Settings saved — all future letters will use this information</div>
   </div>
 
   <div class="layout">
@@ -747,7 +797,19 @@ async function generateLetter() {
     bulk_offer: 'There is a pending bulk settlement offer under consideration.'
   };
 
-  const prompt = `You are an expert medical billing specialist and negotiator for miiSpine, an independent spine surgery practice. You are writing a ${typeLabels[selectedType]} letter to a personal injury attorney regarding a medical lien.
+  const s = getSettings();
+  const prompt = `You are an expert medical billing specialist and negotiator for ${s.practice}, an independent spine surgery practice. You are writing a ${typeLabels[selectedType]} letter to a personal injury attorney regarding a medical lien.
+
+PRACTICE INFORMATION:
+- Practice: ${s.practice}
+- Physician: ${s.physician}
+- Address: ${s.address}
+- Phone: ${s.phone}
+- Fax: ${s.fax}
+- Email: ${s.email}
+- Billing Contact: ${s.billing_name}
+${s.npi ? `- NPI: ${s.npi}` : ''}
+${s.tagline ? `- Tagline: ${s.tagline}` : ''}
 
 CASE DETAILS:
 - Patient: ${patientName}
@@ -762,16 +824,17 @@ CASE DETAILS:
 TONE INSTRUCTIONS: ${toneInstructions[selectedTone]}
 
 Write a professional letter that:
-1. Has a proper header (Date, To/From, Re: line)
+1. Has a proper header (Date, To/From, Re: line) using the practice address above
 2. References specific case details naturally
 3. Clearly states the lien amount and what it covers
 4. ${selectedType === 'settlement_demand' ? 'Includes a specific settlement offer or negotiation position' : 'States clear expectations and next steps'}
 5. ${selectedType === 'final_notice' ? 'References legal remedies available if not resolved' : 'Maintains the professional relationship'}
-6. Ends with a specific call to action and contact information placeholder
+6. Ends with contact information using the practice details above
 7. Uses appropriate medical-legal language for lien letters
 8. Is concise — no more than 3-4 paragraphs
 
-Sign the letter from: "Billing & Collections Department, miiSpine"
+Sign the letter from: "${s.billing_name || 'Billing & Collections Department'}, ${s.practice}${s.tagline ? '\n' + s.tagline : ''}"
+Include phone: ${s.phone} and email: ${s.email} in the signature block.
 
 Write ONLY the letter text, no explanations or meta-commentary. Start directly with the date line.`;
 
@@ -790,11 +853,11 @@ Write ONLY the letter text, no explanations or meta-commentary. Start directly w
   document.getElementById('clearBtn').style.display = 'none';
 
   try {
-    const response = await fetch('/api/generate', {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
+        model: 'claude-sonnet-4-20250514',
         max_tokens: 1000,
         stream: true,
         messages: [{ role: 'user', content: prompt }]
@@ -900,6 +963,58 @@ function clearOutput() {
   document.getElementById('copyBtn').style.display = 'none';
   document.getElementById('clearBtn').style.display = 'none';
 }
+
+// ── SETTINGS ──────────────────────────────────────────────────
+function toggleSettings() {
+  const panel = document.getElementById('settingsPanel');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+  if (panel.style.display === 'block') loadSettingsIntoForm();
+}
+
+function getSettings() {
+  return {
+    practice:     localStorage.getItem('pi_practice')     || 'miiSpine',
+    physician:    localStorage.getItem('pi_physician')    || 'Venu Vemuri, DO',
+    billing_name: localStorage.getItem('pi_billing_name') || 'Billing & Collections Department',
+    email:        localStorage.getItem('pi_email')        || 'practice@miispine.com',
+    phone:        localStorage.getItem('pi_phone')        || '(502) 242-6370',
+    fax:          localStorage.getItem('pi_fax')          || '',
+    address:      localStorage.getItem('pi_address')      || '6420 Dutchmans Pkwy, Suite 160, Louisville, KY 40205',
+    tagline:      localStorage.getItem('pi_tagline')      || 'Independent Spine Surgery · Louisville, Kentucky',
+    npi:          localStorage.getItem('pi_npi')          || '',
+  };
+}
+
+function loadSettingsIntoForm() {
+  const s = getSettings();
+  document.getElementById('set_practice').value     = s.practice;
+  document.getElementById('set_physician').value    = s.physician;
+  document.getElementById('set_billing_name').value = s.billing_name;
+  document.getElementById('set_email').value        = s.email;
+  document.getElementById('set_phone').value        = s.phone;
+  document.getElementById('set_fax').value          = s.fax;
+  document.getElementById('set_address').value      = s.address;
+  document.getElementById('set_tagline').value      = s.tagline;
+  document.getElementById('set_npi').value          = s.npi;
+}
+
+function saveSettings() {
+  localStorage.setItem('pi_practice',     document.getElementById('set_practice').value);
+  localStorage.setItem('pi_physician',    document.getElementById('set_physician').value);
+  localStorage.setItem('pi_billing_name', document.getElementById('set_billing_name').value);
+  localStorage.setItem('pi_email',        document.getElementById('set_email').value);
+  localStorage.setItem('pi_phone',        document.getElementById('set_phone').value);
+  localStorage.setItem('pi_fax',          document.getElementById('set_fax').value);
+  localStorage.setItem('pi_address',      document.getElementById('set_address').value);
+  localStorage.setItem('pi_tagline',      document.getElementById('set_tagline').value);
+  localStorage.setItem('pi_npi',          document.getElementById('set_npi').value);
+  const saved = document.getElementById('settingsSaved');
+  saved.style.display = 'block';
+  setTimeout(() => saved.style.display = 'none', 3000);
+}
+
+// Load settings on startup
+loadSettingsIntoForm();
 </script>
 </body>
 </html>
